@@ -120,6 +120,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ data, onReset }) => {
       </div>
 
       <QuestionCard
+        key={q.id}
         question={q}
         onNext={handleNext}
         isLast={current === questionsToShow.length - 1}

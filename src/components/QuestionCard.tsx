@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import { Check, X, RotateCcw, HelpCircle, Info } from "lucide-react";
 import type { Question } from "../types";
@@ -11,7 +10,7 @@ interface QuestionCardProps {
   onResult?: (correct: boolean) => void;
 }
 
-type PerOptionState = "selected-correct" | "selected-wrong" | "missed-correct" | "neutral";
+type PerOptionState = "selected-correct" | "selected-wrong" | "neutral";
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, onNext, isLast, onResult }) => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -44,7 +43,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, onNext, isLast, o
     if (!checked) return "neutral";
     if (isSelected && isCorrect) return "selected-correct";
     if (isSelected && !isCorrect) return "selected-wrong";
-    if (!isSelected && isCorrect && correct === false) return "missed-correct";
     return "neutral";
   };
 
@@ -81,7 +79,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, onNext, isLast, o
           const styles =
             state === "selected-correct" ? "border-green-300 bg-green-50" :
             state === "selected-wrong" ? "border-red-300 bg-red-50" :
-            state === "missed-correct" ? "border-emerald-300 bg-emerald-50" :
             "border-gray-200 bg-white";
 
         return (
@@ -100,16 +97,14 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, onNext, isLast, o
                 <span>{opt.text}</span>
                 {checked && state === "selected-correct" && <Check className="text-green-600" size={18} />}
                 {checked && state === "selected-wrong" && <X className="text-red-600" size={18} />}
-                {checked && state === "missed-correct" && <Info className="text-emerald-600" size={18} />}
               </div>
               {/* Per-answer comment */}
               {checked && (
-                ((state === "selected-correct") || (state === "selected-wrong") || (state === "missed-correct")) &&
+                ((state === "selected-correct") || (state === "selected-wrong")) &&
                 opt.comment && (
                   <p className={
                     state === "selected-correct" ? "text-green-700 text-sm mt-1" :
-                    state === "selected-wrong" ? "text-red-700 text-sm mt-1" :
-                    "text-emerald-700 text-sm mt-1"
+                    "text-red-700 text-sm mt-1"
                   }>
                     {opt.comment}
                   </p>
