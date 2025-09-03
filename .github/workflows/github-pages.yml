@@ -1,4 +1,4 @@
-name: Deploy to GitLab Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -10,6 +10,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -27,30 +29,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      # This step creates a .gitlab-ci.yml file that will be used by GitLab to deploy the app
-      - name: Create GitLab CI file
+      # For Vite, we need to configure the base URL for GitHub Pages
+      - name: Configure Vite for GitHub Pages
         run: |
-          cat > .gitlab-ci.yml <<EOF
-          pages:
-            stage: deploy
-            script:
-              - mkdir -p public
-              - cp -r dist/* public/
-            artifacts:
-              paths:
-                - public
-            only:
-              - main
-              - master
-          EOF
+          if [ -f "vite.config.ts" ]; then
+            echo "Configuring vite.config.ts for GitHub Pages"
+            sed -i "s|base: '/'|base: '/${{ github.repository }}'|g" vite.config.ts
+          fi
 
-      - name: Push to GitLab
-        uses: actions-x/commit@v6
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          email: "github-actions-bot@example.com"
-          name: "GitHub Actions Bot"
-          message: "Build and update for GitLab Pages deployment"
-          files: ".gitlab-ci.yml dist/"
-          token: ${{ secrets.GITLAB_TOKEN }}
-          repository: ${{ secrets.GITLAB_REPOSITORY_URL }}
-          branch: ${GITHUB_REF#refs/heads/}
+          folder: dist # The folder the action should deploy
+          branch: gh-pages # The branch the action should deploy to
