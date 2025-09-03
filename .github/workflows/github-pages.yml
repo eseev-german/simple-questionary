@@ -26,16 +26,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Build with GitHub Pages environment variable set
       - name: Build
         run: npm run build
-
-      # For Vite, we need to configure the base URL for GitHub Pages
-      - name: Configure Vite for GitHub Pages
-        run: |
-          if [ -f "vite.config.ts" ]; then
-            echo "Configuring vite.config.ts for GitHub Pages"
-            sed -i "s|base: '/'|base: '/${{ github.repository }}'|g" vite.config.ts
-          fi
+        env:
+          GITHUB_PAGES: 'true'
 
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
